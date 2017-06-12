@@ -3,55 +3,103 @@
 // Developed by AceOfAces
 //----------------------------------------------------------------------------------------------------
 /*:
-* @plugindesc R1.01 || Allows developers to customise the HP bar and text Color depending on the remaining HP.
+* @plugindesc R1.02 || Allows developers to customise the HP bar and text Color depending on the remaining HP.
 * @author AceOfAces
 * 
 * @param Compatibility Mode
+* @type boolean
+* @on Activate
+* @off Deactivate
 * @desc Turn this on (set to true) if you customise the normal HP bar and text color on a different plugin.
 * @default false
+* 
 *
+* @param Limits
+* 
 * @param Low HP
 * @desc Set the point where the HP is considered low. The number must be float!
+* @type number
+* @max 1
+* @min 0.01
+* @decimals 2
 * @default 0.25
+* @parent Limits
 *
 * @param Critical HP
 * @desc Set the point where the HP is considered critical. The number must be float!
+* @type number
+* @max 1
+* @min 0.01
+* @decimals 2
 * @default 0.15
+* @parent Limits
+* 
+* @param Colors 
 *
 * @param Normal HP Color 1
 * @desc Changes the color when the HP is considered normal (it's ignored if the compatibility mode is set). Interger variable.
 * @default 11
+* @parent Colors
 * 
 * @param Normal HP Color 2
 * @desc Same with the previous parameter.
+* @type number
+* @max 31
+* @min 0
 * @default 3
+* @parent Colors
 * 
 * @param Low HP Text Color
 * @desc Set the color of the text on low HP. Interger variable.
+* @type number
+* @max 31
+* @min 0
 * @default 2
+* @parent Colors
 *
 * @param Low HP Bar Color 1
 * @desc Sets the color for the HP bar on low HP. Interger variable.
+* @type number
+* @max 31
+* @min 0
 * @default 20
+* @parent Colors
 *
 * @param Low HP Bar Color 2
 * @desc Same with the previous parameter.
+* @type number
+* @max 31
+* @min 0
 * @default 21
+* @parent Colors
 *
 * @param Critical HP Text
 * @desc Set the color of the text when the HP is in critical. Interger variable.
+* @type number
+* @max 31
+* @min 0
 * @default 18
+* @parent Colors
 *
 * @param Critical HP Bar Color 1
 * @desc Set the color of the HP Bar when the HP is in critical. Interger variable.
+* @type number
+* @max 31
+* @min 0
 * @default 18
+* @parent Colors
 * 
 * @param Critical HP Bar Color 2
 * @desc Same with the previous parameter.
+* @type number
+* @max 31
+* @min 0
 * @default 2
+* @parent Colors
+*
 * @help
 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-* HP Color Controller (MV Port) - Version R1.00
+* HP Color Controller (MV Port) - Version R1.02
 * Developed by AceOfAces
 * Licensed under GPLv3 license. Can be used for both Non-commercial and
 * commercial games.
