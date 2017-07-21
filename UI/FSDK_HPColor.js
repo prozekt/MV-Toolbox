@@ -6,7 +6,7 @@
 var FirehawkADK = FirehawkADK || {};
 
 /*:
-* @plugindesc R1.03 || Allows developers to customise the HP bar and text Color depending on the remaining HP.
+* @plugindesc R1.03A || Allows developers to customise the HP bar and text Color depending on the remaining HP.
 * @author AceOfAces
 * 
 * @param Compatibility Mode
@@ -172,7 +172,7 @@ Window_Base.prototype.hpbarColorPicker1 = function(actor) {
 //Pick the HP Color 2 for the HP Gauge.
 Window_Base.prototype.hpbarColorPicker2 = function(actor) {
     if (actor.hp < actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar2);
-    else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp < actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(HPBarLow2);
+    else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp < actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow2);
     else if (FirehawkADK.ParamDeck.CompatMode == true) this.hpGaugeColor2();
     else return this.textColor(FirehawkADK.ParamDeck.HPNormalBar2);
 };
