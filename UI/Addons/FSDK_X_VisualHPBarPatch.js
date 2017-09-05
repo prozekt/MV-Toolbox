@@ -4,7 +4,7 @@
 //----------------------------------------------------------------------------------------------------
 
 /*:
-* @plugindesc R1.00 || Modifies Yanfly's Visual HP Bars to use the HP Color Controller.
+* @plugindesc R1.00A || Modifies Yanfly's Visual HP Bars to use the HP Color Controller.
 * @author AceOfAces
 * 
 * @param Compatibility Mode
@@ -44,19 +44,25 @@ var VHGCompatMode = String(paramdeck['Compatibility Mode']).trim().toLowerCase()
 
 // Pick the HP Color 1 for the HP Gauge.
 Window_VisualHPGauge.prototype.hpbarColorPicker1 = function(actor) {
-    if (actor.hp < actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar1);
-    else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp < actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow1);
+    if (actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar1);
+    else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow1);
     else if (VHGCompatMode == true) this.textColor(Yanfly.Param.VHGHpColor1);
     else return this.textColor(FirehawkADK.ParamDeck.HPNormalBar1);
 };
 
 //Pick the HP Color 2 for the HP Gauge.
 Window_VisualHPGauge.prototype.hpbarColorPicker2 = function(actor) {
-    if (actor.hp < actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar2);
-    else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp < actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow2);
+    if (actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar2);
+    else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow2);
     else if (VHGCompatMode == true) this.textColor(Yanfly.Param.VHGHpColor2);
     else return this.textColor(FirehawkADK.ParamDeck.HPNormalBar2);
 };
+
+Window_VisualHPGauge.prototype.hpTextColorPicker = function(actor) {
+  if (actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPText);
+  else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPLowText);
+  else return this.systemColor();
+ };
 
 Window_VisualHPGauge.prototype.drawActorHp = function(actor, x, y, width) {
     width = width || 186;
@@ -69,7 +75,7 @@ Window_VisualHPGauge.prototype.drawActorHp = function(actor, x, y, width) {
       this.drawGauge(x, y, width, rate, color1, color2);
     }
     if (Yanfly.Param.VHGShowHP) {
-      this.changeTextColor(this.systemColor());
+      this.changeTextColor(this.hpTextColorPicker(actor));
       this.drawText(TextManager.hpA, x, y, 44);
     }
     if (Yanfly.Param.VHGShowValue) {
