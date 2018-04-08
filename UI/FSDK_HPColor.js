@@ -1,24 +1,44 @@
 //----------------------------------------------------------------------------------------------------
 // HP Color Controller
+// Version R1.04
 // Developed by AceOfAces
 //----------------------------------------------------------------------------------------------------
 
 var FirehawkADK = FirehawkADK || {};
 
 /*:
-* @plugindesc R1.03B || Allows developers to customise the HP bar and text Color depending on the remaining HP.
+* @plugindesc R1.04 || Allows developers to customise the HP bar and text Color depending on the remaining HP.
 * @author AceOfAces
 * 
+* @param Options
+*
 * @param Compatibility Mode
 * @type boolean
 * @on Activate
 * @off Deactivate
 * @desc Turn this on (set to true) if you customise the normal HP bar and text color on a different plugin.
 * @default false
+* @parent Options
 * 
+* @param Add Warning Color
+* @type boolean
+* @on Activate
+* @off Deactivate
+* @desc Adds another color for the HP bar.
+* @default false
+* @parent Options
 *
 * @param Limits
 * 
+* @param Warning HP
+* @desc Set the point where the HP is considered in the "Warning" area. The number must be float!
+* @type number
+* @max 1
+* @min 0.01
+* @decimals 2
+* @default 0.50
+* @parent Limits
+*
 * @param Low HP
 * @desc Set the point where the HP is considered low. The number must be float!
 * @type number
@@ -40,7 +60,10 @@ var FirehawkADK = FirehawkADK || {};
 * @param Colors 
 *
 * @param Normal HP Color 1
-* @desc Changes the color when the HP is considered normal (it's ignored if the compatibility mode is set). Interger variable.
+* @desc Changes the color when the HP is considered normal (it's ignored if the compatibility mode is set). Interger value.
+* @type number
+* @max 31
+* @min 0
 * @default 11
 * @parent Colors
 * 
@@ -51,7 +74,32 @@ var FirehawkADK = FirehawkADK || {};
 * @min 0
 * @default 3
 * @parent Colors
+*
+* @param Warning HP Text Color
+* @desc Set the color of the text on Warning HP. Interger variable.
+* @type number
+* @max 31
+* @min 0
+* @default 14
+* @parent Colors
+*
+* @param Warning HP Color 1
+* @desc Changes the color when the HP reaches "Warning" status (it's ignored if the "Add Warning Color" is off). Interger value.
+* @type number
+* @max 31
+* @min 0
+* @default 14
+* @parent Colors
 * 
+* @param Warning HP Color 2
+* @desc Same with the previous parameter.
+* @type number
+* @max 31
+* @min 0
+* @default 6
+* @parent Colors
+* 
+*
 * @param Low HP Text Color
 * @desc Set the color of the text on low HP. Interger variable.
 * @type number
@@ -102,7 +150,7 @@ var FirehawkADK = FirehawkADK || {};
 *
 * @help
 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-* HP Color Controller (MV Port) - Version R1.02
+* HP Color Controller (MV Port) - Version R1.04
 * Developed by AceOfAces
 * Licensed under GPLv3 license. Can be used for both Non-commercial and
 * commercial games.
@@ -144,10 +192,15 @@ var paramdeck = PluginManager.parameters('FSDK_HPColor');
 FirehawkADK.ParamDeck = FirehawkADK.ParamDeck || {};
 //Load variables set in the Plugin Manager.
 FirehawkADK.ParamDeck.CompatMode = String(paramdeck['Compatibility Mode']).trim().toLowerCase() === 'true';
+FirehawkADK.ParamDeck.WarningColor = String(paramdeck['Add Warning Color']).trim().toLowerCase() === 'true';
+FirehawkADK.ParamDeck.WarningHPLimit = parseFloat(paramdeck['Warning HP']);
 FirehawkADK.ParamDeck.LowHPLimit = parseFloat(paramdeck['Low HP']);
 FirehawkADK.ParamDeck.CriticalHPLimit = parseFloat(paramdeck['Critical HP']);
 FirehawkADK.ParamDeck.HPNormalBar1 =  parseInt(paramdeck['Normal HP Color 1']);
 FirehawkADK.ParamDeck.HPNormalBar2 = parseInt(paramdeck['Normal HP Color 2']);
+FirehawkADK.ParamDeck.HPWarningText = parseInt(paramdeck['Warning HP Text Color']);
+FirehawkADK.ParamDeck.HPBarWarning1 = parseInt(paramdeck['Warning HP Color 1']);
+FirehawkADK.ParamDeck.HPBarWarning2 = parseInt (paramdeck['Warning HP Color 2']);
 FirehawkADK.ParamDeck.HPLowText = parseInt(paramdeck['Low HP Text Color']);
 FirehawkADK.ParamDeck.HPBarLow1 = parseInt(paramdeck['Low HP Bar Color 1']);
 FirehawkADK.ParamDeck.HPBarLow2 = parseInt (paramdeck['Low HP Bar Color 2']);
@@ -155,9 +208,11 @@ FirehawkADK.ParamDeck.CriticalHPText = parseInt(paramdeck['Critical HP Text']);
 FirehawkADK.ParamDeck.CriticalHPBar1 = parseInt(paramdeck['Critical HP Bar Color 1']);
 FirehawkADK.ParamDeck.CriticalHPBar2 = parseInt(paramdeck['Critical HP Bar Color 2']);
 
+//Pick the HP Text Color.
 Window_Base.prototype.hpTextColorPicker = function(actor) {
  if (actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPText);
  else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPLowText);
+ else if (FirehawkADK.ParamDeck.WarningColor && (actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit)) return this.textColor(FirehawkADK.ParamDeck.HPWarningText);
  else return this.systemColor();
 };
 
@@ -165,6 +220,7 @@ Window_Base.prototype.hpTextColorPicker = function(actor) {
 Window_Base.prototype.hpbarColorPicker1 = function(actor) {
     if (actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar1);
     else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow1);
+    else if (FirehawkADK.ParamDeck.WarningColor && (actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit)) return this.textColor(FirehawkADK.ParamDeck.HPBarWarning1);
     else if (FirehawkADK.ParamDeck.CompatMode == true) this.hpGaugeColor1();
     else return this.textColor(FirehawkADK.ParamDeck.HPNormalBar1);
 };
@@ -172,7 +228,8 @@ Window_Base.prototype.hpbarColorPicker1 = function(actor) {
 //Pick the HP Color 2 for the HP Gauge.
 Window_Base.prototype.hpbarColorPicker2 = function(actor) {
     if (actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar2);
-    else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow2);
+    else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp < actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow2);
+    else if (FirehawkADK.ParamDeck.WarningColor && (actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit)) return this.textColor(FirehawkADK.ParamDeck.HPBarWarning2);
     else if (FirehawkADK.ParamDeck.CompatMode == true) this.hpGaugeColor2();
     else return this.textColor(FirehawkADK.ParamDeck.HPNormalBar2);
 };
@@ -196,8 +253,8 @@ Window_Base.prototype.hpColor = function(actor) {
     } else if (actor.hp < actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit)
     return this.textColor(FirehawkADK.ParamDeck.CriticalHPText);
      else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp < actor.mhp * FirehawkADK.ParamDeck.LowHPLimit)
-     return this.textColor(FirehawkADK.ParamDeck.HPLowText);   
- else {
-        return this.normalColor();
-    }
+     return this.textColor(FirehawkADK.ParamDeck.HPLowText);
+     else if (FirehawkADK.WarningColor && (actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit && actor.hp < actor.mhp * FirehawkADK.WarningHPLimit))
+     return this.textColor(FirehawkADK.ParamDeck.HPWarningText);   
+     else return this.normalColor();
 };
