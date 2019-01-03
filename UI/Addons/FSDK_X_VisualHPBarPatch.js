@@ -19,7 +19,7 @@
 * Extension for HP Color Controller: Yanfly's Visual HP Bar
 * Version R1.01
 * Developed by AceOfAces
-* Licensed under GPLv3 license. Can be used for both Non-commercial and
+* Licensed under the MIT license. Can be used for both Non-commercial and
 * commercial games.
 * Please credit me as AceOfAces when you use this plugin.
 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
