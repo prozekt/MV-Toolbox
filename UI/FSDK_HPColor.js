@@ -1,13 +1,13 @@
 //----------------------------------------------------------------------------------------------------
 // HP Color Controller
-// Version R1.04
+// Version R1.05
 // Developed by AceOfAces
 //----------------------------------------------------------------------------------------------------
 
 var FirehawkADK = FirehawkADK || {};
 
 /*:
-* @plugindesc R1.04 || Allows developers to customise the HP bar and text Color depending on the remaining HP.
+* @plugindesc R1.05 || Allows developers to customise the HP bar and text Color depending on the remaining HP.
 * @author AceOfAces
 * 
 * @param Options
@@ -150,7 +150,7 @@ var FirehawkADK = FirehawkADK || {};
 *
 * @help
 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-* HP Color Controller (MV Port) - Version R1.04
+* HP Color Controller (MV Port) - Version R1.05
 * Developed by AceOfAces
 * Licensed under the MIT license. Can be used for both Non-commercial and
 * commercial games.
@@ -209,36 +209,57 @@ FirehawkADK.ParamDeck.CriticalHPBar1 = parseInt(paramdeck['Critical HP Bar Color
 FirehawkADK.ParamDeck.CriticalHPBar2 = parseInt(paramdeck['Critical HP Bar Color 2']);
 
 //Pick the HP Text Color.
-Window_Base.prototype.hpTextColorPicker = function(actor) {
- if (actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPText);
- else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPLowText);
- else if (FirehawkADK.ParamDeck.WarningColor && (actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit)) return this.textColor(FirehawkADK.ParamDeck.HPWarningText);
- else return this.systemColor();
-};
+Window_Base.prototype.hpTextColorPicker = function(actor){
+    switch (true){
+        case (FirehawkADK.ParamDeck.WarningColor === true) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit:
+        case (FirehawkADK.ParamDeck.WarningColor === false) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit:
+            return this.systemColor();
+        case (FirehawkADK.ParamDeck.WarningColor === true) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit:
+            return this.textColor(FirehawkADK.ParamDeck.HPWarningText);
+        case actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit:
+            return this.textColor(FirehawkADK.ParamDeck.HPLowText);
+        case actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit:
+            return this.textColor(FirehawkADK.ParamDeck.CriticalHPText);
+    }
+}
 
 // Pick the HP Color 1 for the HP Gauge.
-Window_Base.prototype.hpbarColorPicker1 = function(actor) {
-    if (actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar1);
-    else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow1);
-    else if (FirehawkADK.ParamDeck.WarningColor && (actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit)) return this.textColor(FirehawkADK.ParamDeck.HPBarWarning1);
-    else if (FirehawkADK.ParamDeck.CompatMode == true) this.hpGaugeColor1();
-    else return this.textColor(FirehawkADK.ParamDeck.HPNormalBar1);
+Window_Base.prototype.hpbarColorPicker1 = function(actor, compatFlag, compatColor){
+    switch (true){
+        case (FirehawkADK.ParamDeck.WarningColor == true) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit:
+        case (FirehawkADK.ParamDeck.WarningColor == false) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit:
+            return (compatFlag == true) ? 
+            compatColor :
+             this.textColor(FirehawkADK.ParamDeck.HPNormalBar1);
+        case (FirehawkADK.ParamDeck.WarningColor == true) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit:
+            return this.textColor(FirehawkADK.ParamDeck.HPBarWarning1);
+        case actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit:
+            return this.textColor(FirehawkADK.ParamDeck.HPBarLow1);
+        case actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit:
+            return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar1);
+    }
 };
 
 //Pick the HP Color 2 for the HP Gauge.
-Window_Base.prototype.hpbarColorPicker2 = function(actor) {
-    if (actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar2);
-    else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp < actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow2);
-    else if (FirehawkADK.ParamDeck.WarningColor && (actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit)) return this.textColor(FirehawkADK.ParamDeck.HPBarWarning2);
-    else if (FirehawkADK.ParamDeck.CompatMode == true) this.hpGaugeColor2();
-    else return this.textColor(FirehawkADK.ParamDeck.HPNormalBar2);
+Window_Base.prototype.hpbarColorPicker2 = function(actor, compatFlag, compatColor){
+    switch (true){
+        case (FirehawkADK.ParamDeck.WarningColor == true) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit:
+        case (FirehawkADK.ParamDeck.WarningColor == false) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit:
+            return (compatFlag == true) ? compatColor : this.textColor(FirehawkADK.ParamDeck.HPNormalBar2);
+        case (FirehawkADK.ParamDeck.WarningColor == true) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit:
+            return this.textColor(FirehawkADK.ParamDeck.HPBarWarning2);
+        case actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit:
+            return this.textColor(FirehawkADK.ParamDeck.HPBarLow2);
+        case actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit:
+            return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar2);
+    }
 };
 
 //Re-write the drawActorHp function.
 this.Window_Base.prototype.drawActorHp = function(actor, x, y, width) {
     width = width || 186;
-    var color1 = this.hpbarColorPicker1(actor);
-    var color2 = this.hpbarColorPicker2(actor);
+    var color1 = this.hpbarColorPicker1(actor, FirehawkADK.ParamDeck.CompatMode, this.hpGaugeColor1());
+    var color2 = this.hpbarColorPicker2(actor, FirehawkADK.ParamDeck.CompatMode, this.hpGaugeColor2());
     this.drawGauge(x, y, width, actor.hpRate(), color1, color2);
     this.changeTextColor(this.hpTextColorPicker(actor));
     this.drawText(TextManager.hpA, x, y, 44);
@@ -250,11 +271,17 @@ this.Window_Base.prototype.drawActorHp = function(actor, x, y, width) {
 Window_Base.prototype.hpColor = function(actor) {
     if (actor.isDead()) {
         return this.deathColor();
-    } else if (actor.hp < actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit)
-    return this.textColor(FirehawkADK.ParamDeck.CriticalHPText);
-     else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp < actor.mhp * FirehawkADK.ParamDeck.LowHPLimit)
-     return this.textColor(FirehawkADK.ParamDeck.HPLowText);
-     else if (FirehawkADK.WarningColor && (actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit && actor.hp < actor.mhp * FirehawkADK.WarningHPLimit))
-     return this.textColor(FirehawkADK.ParamDeck.HPWarningText);   
-     else return this.normalColor();
+    } else switch(true){
+        case (FirehawkADK.ParamDeck.WarningColor == true) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit:
+        case (FirehawkADK.ParamDeck.WarningColor == false) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit:
+            return this.normalColor();
+        case (FirehawkADK.ParamDeck.WarningColor == true) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit:
+            return this.textColor(FirehawkADK.ParamDeck.HPWarningText);
+        case actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit:
+            return this.textColor(FirehawkADK.ParamDeck.HPLowText);
+        case actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit:
+                    return this.textColor(FirehawkADK.ParamDeck.CriticalHPText);
+        case actor.isDead(): 
+                        return this.deathColor();
+    }
 };

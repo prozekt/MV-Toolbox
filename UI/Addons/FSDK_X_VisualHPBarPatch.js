@@ -4,7 +4,7 @@
 //----------------------------------------------------------------------------------------------------
 
 /*:
-* @plugindesc R1.01 || Modifies Yanfly's Visual HP Bars to use the HP Color Controller.
+* @plugindesc R1.00B || Modifies Yanfly's Visual HP Bars to use the HP Color Controller.
 * @author AceOfAces
 * 
 * @param Compatibility Mode
@@ -17,9 +17,9 @@
 * @help
 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 * Extension for HP Color Controller: Yanfly's Visual HP Bar
-* Version R1.01
+* Version R1.00
 * Developed by AceOfAces
-* Licensed under the MIT license. Can be used for both Non-commercial and
+* Licensed under GPLv3 license. Can be used for both Non-commercial and
 * commercial games.
 * Please credit me as AceOfAces when you use this plugin.
 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -42,52 +42,25 @@
 var VHGParamDeck = PluginManager.parameters('FSDK_X_VisualHPBarPatch');
 var VHGCompatMode = String(paramdeck['Compatibility Mode']).trim().toLowerCase() === 'true';
 
-//Pick the HP Text Color.
-Window_VisualHPGauge.prototype.hpTextColorPicker = function(actor) {
-    if (actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPText);
-    else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPLowText);
-    else if (FirehawkADK.ParamDeck.WarningColor && (actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit)) return this.textColor(FirehawkADK.ParamDeck.HPWarningText);
-    else return this.systemColor();
-   };
-
-// Pick the HP Color 1 for the HP Gauge.
-Window_VisualHPGauge.prototype.hpbarColorPicker1 = function(actor) {
-  if (actor.hp <= actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar1);
-  else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow1);
-  else if (FirehawkADK.ParamDeck.WarningColor && (actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit)) return this.textColor(FirehawkADK.ParamDeck.HPBarWarning1);
-  else if (VHGCompatMode == true) this.textColor(Yanfly.Param.VHGHpColor1);
-  else return this.textColor(FirehawkADK.ParamDeck.HPNormalBar1);
-};
-
-//Pick the HP Color 2 for the HP Gauge.
-Window_VisualHPGauge.prototype.hpbarColorPicker2 = function(actor) {
-  if (actor.hp < actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit) return this.textColor(FirehawkADK.ParamDeck.CriticalHPBar2);
-  else if (actor.hp > actor.mhp * FirehawkADK.ParamDeck.CriticalHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.LowHPLimit) return this.textColor(FirehawkADK.ParamDeck.HPBarLow2);
-  else if (FirehawkADK.ParamDeck.WarningColor && (actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit && actor.hp <= actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit)) return this.textColor(FirehawkADK.ParamDeck.HPBarWarning2);
-  else if (VHGCompatMode == true) this.textColor(Yanfly.Param.VHGHpColor2);
-  else return this.textColor(FirehawkADK.ParamDeck.HPNormalBar2);
-};
-
 Window_VisualHPGauge.prototype.drawActorHp = function(actor, x, y, width) {
-  width = width || 186;
-  var color1 = this.hpbarColorPicker1(actor);
-  var color2 = this.hpbarColorPicker2(actor);
-  var rate = this._displayedValue / actor.mhp;
-  if (Imported.YEP_AbsorptionBarrier && actor.barrierPoints() > 0) {
+    width = width || 186;
+    var color1 = this.hpbarColorPicker1(actor, VHGCompatMode == 'true', this.textColor(Yanfly.Param.VHGHpColor1));
+    var color2 = this.hpbarColorPicker2(actor, VHGCompatMode == 'true', this.textColor(Yanfly.Param.VHGHpColor2));
+    var rate = this._displayedValue / actor.mhp;
+    if (Imported.YEP_AbsorptionBarrier && actor.barrierPoints() > 0) {
       ww = this.drawBarrierGauge(actor, x, y, width);
-  }
-  else {
+    } else {
       this.drawGauge(x, y, width, rate, color1, color2);
-  }
-  if (Yanfly.Param.VHGShowHP) {
-      this.changeTextColor(this.hpTextColorPicker(actor));
+    }
+    if (Yanfly.Param.VHGShowHP) {
+      this.changeTextColor(this.systemColor());
       this.drawText(TextManager.hpA, x, y, 44);
-  }
-  if (Yanfly.Param.VHGShowValue) {
-      var val = this._displayedValue;
+    }
+    if (Yanfly.Param.VHGShowValue) {
+      var val = this._displayedValue
       var max = actor.mhp;
       var w = width;
       var color = this.hpColor(actor);
       this.drawCurrentAndMax(val, max, x, y, w, color, this.normalColor());
-  }
+    }
 };

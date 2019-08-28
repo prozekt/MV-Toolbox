@@ -1,5 +1,5 @@
 /*:
-* @plugindesc R1.00 || Modifies Yanfly's Absorbion Barrier to support the HP Color Controller.
+* @plugindesc R1.00A || Modifies Yanfly's Absorbion Barrier to support the HP Color Controller.
 * @author AceOfAces
 * 
 * @help
@@ -26,8 +26,8 @@
 
 Window_Base.prototype.drawActorHp = function(actor, wx, wy, ww) {
     ww = ww || 186;
-    var color1 = this.hpbarColorPicker1(actor);
-    var color2 = this.hpbarColorPicker2(actor);
+    var color1 = this.hpbarColorPicker1(actor, FirehawkADK.ParamDeck.CompatMode == 'true', this.hpGaugeColor1());
+    var color2 = this.hpbarColorPicker2(actor, FirehawkADK.ParamDeck.CompatMode == 'true', this.hpGaugeColor1());
     if (actor.barrierPoints() > 0) {
       ww = this.drawBarrierGauge(actor, wx, wy, ww);
     } else {
@@ -52,8 +52,8 @@ Window_Base.prototype.drawBarrierGauge = function(actor, wx, wy, ww) {
     var color1 = this.barrierColor1();
     var color2 = this.barrierColor2();
     this.drawGauge(wx, wy, ww, rate2, color1, color2);
-    var color1 = this.hpbarColorPicker1(actor);
-    var color2 = this.hpbarColorPicker2(actor);
+    var color1 = this.hpbarColorPicker1(actor, FirehawkADK.ParamDeck.CompatMode == 'true', this.hpGaugeColor1());
+    var color2 = this.hpbarColorPicker2(actor, FirehawkADK.ParamDeck.CompatMode == 'true', this.hpGaugeColor2());
     var ww2 = ww * rate1;
     this.drawGauge(wx, wy, ww2, 1, color1, color2);
     return ww;
