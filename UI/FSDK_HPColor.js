@@ -269,9 +269,7 @@ this.Window_Base.prototype.drawActorHp = function(actor, x, y, width) {
 
 //Re-write the hpColor function so it can change the text color.
 Window_Base.prototype.hpColor = function(actor) {
-    if (actor.isDead()) {
-        return this.deathColor();
-    } else switch(true){
+     switch(true){
         case (FirehawkADK.ParamDeck.WarningColor == true) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.WarningHPLimit:
         case (FirehawkADK.ParamDeck.WarningColor == false) && actor.hp > actor.mhp * FirehawkADK.ParamDeck.LowHPLimit:
             return this.normalColor();

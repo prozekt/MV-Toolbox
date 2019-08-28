@@ -4,7 +4,7 @@
 //----------------------------------------------------------------------------------------------------
 
 /*:
-* @plugindesc R1.00B || Modifies Yanfly's Visual HP Bars to use the HP Color Controller.
+* @plugindesc R1.01A || Modifies Yanfly's Visual HP Bars to use the HP Color Controller.
 * @author AceOfAces
 * 
 * @param Compatibility Mode
@@ -17,7 +17,7 @@
 * @help
 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 * Extension for HP Color Controller: Yanfly's Visual HP Bar
-* Version R1.00
+* Version R1.01A
 * Developed by AceOfAces
 * Licensed under GPLv3 license. Can be used for both Non-commercial and
 * commercial games.
@@ -53,7 +53,7 @@ Window_VisualHPGauge.prototype.drawActorHp = function(actor, x, y, width) {
       this.drawGauge(x, y, width, rate, color1, color2);
     }
     if (Yanfly.Param.VHGShowHP) {
-      this.changeTextColor(this.systemColor());
+      this.changeTextColor(this.hpTextColorPicker(actor));
       this.drawText(TextManager.hpA, x, y, 44);
     }
     if (Yanfly.Param.VHGShowValue) {
