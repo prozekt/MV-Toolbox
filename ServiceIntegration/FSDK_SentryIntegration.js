@@ -89,10 +89,13 @@ FirehawkADK.SentryIntegration = FirehawkADK.SentryIntegration || {};
  *  the the version and environment tags you've set up over to this
  *  plugin's parameters. Make sure to replace [at] with the [at]
  *  symbol and switch the 'Force Reporting' to Yes.
- * 4. Once the project's set up, we'll need to test it out.
+ * 4. Once the project's set up, we'll need to test it out. Take any
+ * plugin and add a myfunction1(); in another function. The AltMenuScreen
+ * plugin is a good candidate. Also, make sure to set the 'Force Reporting'
+ * option to Yes.
  * 5. If the game crashes and Sentry has en entry for the error, the
  * plugin's set up correctly. Set the 'Force Reporting' option to
- * No.
+ * No. Make sure to also remove the myfunction1(); as well.
  * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  * Plugin API
  * The plugin has a pretty simple API that can integrate easilly
