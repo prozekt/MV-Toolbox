@@ -1,0 +1,47 @@
+Name:
+Automatic Error Reports
+
+Help Description:
+Send error reports to the developer.
+
+Symbol:
+SentryUploadReports
+
+Show/Hide:
+show = true;
+
+Enable:
+enabled = true;
+
+Ext:
+ext = 0;
+
+Make Option Code:
+this.addCommand(name, symbol, enabled, ext);
+
+Draw Option Code:
+var rect = this.itemRectForText(index);
+var statusWidth = this.statusWidth();
+var titleWidth = rect.width - statusWidth;
+this.resetTextColor();
+this.changePaintOpacity(this.isCommandEnabled(index));
+this.drawOptionsName(index);
+this.drawOptionsOnOff(index);
+
+Process OK Code:
+var index = this.index();
+var symbol = this.commandSymbol(index);
+var value = this.getConfigValue(symbol);
+this.changeValue(symbol, !value);
+
+Cursor Right Code:
+var index = this.index();
+var symbol = this.commandSymbol(index);
+var value = this.getConfigValue(symbol);
+this.changeValue(symbol, true);
+
+Cursor Left Code:
+var index = this.index();
+var symbol = this.commandSymbol(index);
+var value = this.getConfigValue(symbol);
+this.changeValue(symbol, false);
